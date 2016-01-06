@@ -1,0 +1,7 @@
+#Dimensional Energy Equation in Fluid
+# dT/dt + u(dT/dx) + v(dT/dy) = (k/rc)*( d2T/dx2 + d2T/dy2 )
+# implicit solution
+# T1=Temperature at n-level
+u(i,j)*(T(i+1,j)-T(i-1,j))/(2.0*dx) + v(i,j)*(T(i,j+1)-T(i,j-1))/(2.0*dy)
+(k/rc)*( T(i+1,j) )
+
