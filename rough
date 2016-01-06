@@ -1,7 +1,54 @@
-#Dimensional Energy Equation in Fluid
-# dT/dt + u(dT/dx) + v(dT/dy) = (k/rc)*( d2T/dx2 + d2T/dy2 )
+#1.Dimensional Energy Equation in Fluid
+# dT/dt + u(dT/dx) + v(dT/dy) = k/(rc)*( d2T/dx2 + d2T/dy2 )
 # implicit solution
 # T1=Temperature at n-level
+expansion = u(dT/dx) + v(dT/dy) 
 u(i,j)*(T(i+1,j)-T(i-1,j))/(2.0*dx) + v(i,j)*(T(i,j+1)-T(i,j-1))/(2.0*dy)
-(k/rc)*( T(i+1,j) )
+expansion = k/(rc)*( d2T/dx2 + d2T/dy2 )
+k/(rc)*( {T(i+1,j)-2.0*T(i,j)+T(i-1,j)}/dx**2 + {T(i,j+1)-2.0*T(i,j)+T(i,j-1)}/dy**2 )
+k/(rc)*( (T(i+1,j)+T(i-1,j))/dx**2 + (T(i,j+1)+T(i,j-1))/dy**2 ) - k/(rc)*(2.0*T(i,j)/dx**2 + 2.0*T(i,j)/dy**2) 
+k/(rc)*( (T(i+1,j)+T(i-1,j))/dx**2 + (T(i,j+1)+T(i,j-1))/dy**2 ) - k/(rc)*2.0*T(i,j)*(1.0/dx**2 + 1.0/dy**2)
+
+final expression => T(i,j)=( T1(i,j)/dt + (diffusion term except T(i,j) term) - (convection term) )/(coefficient of T(i,j))
+T(i,j)= ( T1(i,j)/dt + k/(rc)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2)  - 
+linecontinued    u(i,j)*(T(i+1,j)-T(i-1,j))/(2.0*dx) - v(i,j)*(T(i,j+1)-T(i,j-1))/(2.0*dy) )/(1/dt+2.0*k/(rc)*(1.0/dx**2+1.0/dy**2))
+
+#2.Dimensional Energy Equation in Wall
+# dT/dt = k1/(r1c1)*( d2T/dx2 + d2T/dy2 )
+T(i,j)= ( T1(i,j)/dt + k1/(r1c1)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2) )/(1/dt+2.0*k1/(r1c1)*(1.0/dx**2+1.0/dy**2))
+
+#3.Dimensional Energy Equation in Chip (with q in W/m3 as internal heat generation)
+# dT/dt = k2/(r2c2)*( d2T/dx2 + d2T/dy2 ) + q/(r2c2)
+T(i,j)= ( q/(r2c2) + T1(i,j)/dt + 
+linecontinued    k1/(r1c1)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2) )/(1/dt+2.0*(k1/r1c1)*(1.0/dx**2+1.0/dy**2))
+
+#4. Dimensional Wall and Chip interface equation
+# ((r1c1+r2c2)/2.0)*dT/dt = ( k1*T(i-1,j)-(k1+k2)*T(i,j)+k2*T(i+1,j) )/dx**2  + ((k1+k2)/2.d0)*d2T/dy2 + q/(2.0*r2c2)
+# T(i,j) bringing on left side from above
+((r1c1+r2c2)/2.0)*dT/dt + (k1+k2)*(1/dx**2+1/dy**2)*T(i,j)
+T(i,j)*( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) ) - T1(i,j)*(r1c1+r2c2)/(2.0*dt)
+# Right Side Terms
+( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2)
+final expression || (Left side = Right side) || T(i,j) =  (T1(i,j) + right side)/(coefficient of T(i,j))
+(step-1)@ T(i,j)*( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) ) - T1(i,j)*(r1c1+r2c2)/(2.0*dt) = 
+linecontinued    ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2) 
+(step-2)@ T(i,j)*( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) ) = T1(i,j)*(r1c1+r2c2)/(2.0*dt) + 
+linecontinued    ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2)
+(lastly)@ T(i,j) = ( T1(i,j)*(r1c1+r2c2)/(2.0*dt) + ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
+linecontinued    + q/(2.0*r2c2) )/( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) )
+
+#5. Dimensional Wall and Fluid interface equation |a| Left |b| Right
+#|a| ((r1c1+rc)/2.0)*dT/dt = ( k1*T(i-1,j)-(k1+k)*T(i,j)+k*T(i+1,j) )/dx**2  + ((k1+k)/2.d0)*d2T/dy2 
+#|b| ((r1c1+rc)/2.0)*dT/dt = ( k*T(i-1,j)-(k1+k)*T(i,j)+k1*T(i+1,j) )/dx**2  + ((k1+k)/2.d0)*d2T/dy2
+
+
+
+
+
+
+
+
+
+
+
 
