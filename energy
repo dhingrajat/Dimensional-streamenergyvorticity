@@ -34,21 +34,27 @@ final expression || (Left side = Right side) || T(i,j) =  (T1(i,j) + right side)
 linecontinued    ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2) 
 (step-2)@ T(i,j)*( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) ) = T1(i,j)*(r1c1+r2c2)/(2.0*dt) + 
 linecontinued    ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2)
-(lastly)@ T(i,j) = ( T1(i,j)*(r1c1+r2c2)/(2.0*dt) + ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
+(lastly)@ T(i,j) = ( T1(i,j)*(r1c1+r2c2)/(2.0*dt) + ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2 + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
 linecontinued    + q/(2.0*r2c2) )/( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) )
 
 #5. Dimensional Wall and Fluid interface equation |a| Left |b| Right
 #|a| ((r1c1+rc)/2.0)*dT/dt = ( k1*T(i-1,j)-(k1+k)*T(i,j)+k*T(i+1,j) )/dx**2  + ((k1+k)/2.d0)*d2T/dy2 
+T(i,j) = ( T1(i,j)*(r1c1+rc)/(2.0*dt) + ( (k1*T(i-1,j)+k*T(i+1,j))/dx**2 + (k1+k)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) )
+linecontinued    /( (r1c1+rc)/(2.0*dt) + (k1+k)*(1/dx**2+1/dy**2) )
+
 #|b| ((r1c1+rc)/2.0)*dT/dt = ( k*T(i-1,j)-(k1+k)*T(i,j)+k1*T(i+1,j) )/dx**2  + ((k1+k)/2.d0)*d2T/dy2
+T(i,j) = ( T1(i,j)*(r1c1+rc)/(2.0*dt) + ( (k*T(i-1,j)+k1*T(i+1,j))/dx**2 + (k1+k)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) )
+linecontinued    /( (r1c1+rc)/(2.0*dt) + (k1+k)*(1/dx**2+1/dy**2) )
 
+#6. Dimensional Chip and Fluid interface equation |a| Top |b| Bottom |c| Front
+#|a| ((r2c2+rc)/2.0)*dT/dt = ((k2+k)/2.d0)*d2T/dx2 + ( k2*T(i,j-1)-(k+k2)*T(i,j)+k*T(i,j+1) )/dy**2 + q/(2.0*r2c2)
+T(i,j) = ( T1(i,j)*(r2c2+rc)/(2.0*dt) + ( (k2+k)/2.0*(T(i+1,j)+T(i-1,j))/dx**2 + (k2*T(i,j-1)+k*T(i,j+1))/dy**2 )
+linecontinued    + q/(2.0*r2c2) )/( (r2c2+rc)/(2.0*dt) + (k2+k)*(1/dx**2+1/dy**2) )
 
+#|b| ((r2c2+rc)/2.0)*dT/dt = ((k2+k)/2.d0)*d2T/dx2 + ( k*T(i,j-1)-(k+k2)*T(i,j)+k2*T(i,j+1) )/dy**2 + q/(2.0*r2c2)
+T(i,j) = ( T1(i,j)*(r2c2+rc)/(2.0*dt) + ( (k2+k)/2.0*(T(i+1,j)+T(i-1,j))/dx**2 + (k*T(i,j-1)+k2*T(i,j+1))/dy**2 )
+linecontinued    + q/(2.0*r2c2) )/( (r2c2+rc)/(2.0*dt) + (k2+k)*(1/dx**2+1/dy**2) )
 
-
-
-
-
-
-
-
-
-
+#|c| ((r2c2+rc)/2.0)*dT/dt = ( k2*T(i-1,j)-(k2+k)*T(i,j)+k*T(i+1,j) )/dx**2 + ((k2+k)/2.d0)*d2T/dy2 + q/(2.0*r2c2) 
+T(i,j) = ( T1(i,j)*(r2c2+rc)/(2.0*dt) + ( (k2*T(i-1,j)+k*T(i+1,j))/dx**2  + (k2+k)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
+linecontinued    + q/(2.0*r2c2) )/( (r2c2+rc)/(2.0*dt) + (k2+k)*(1/dx**2+1/dy**2) )
