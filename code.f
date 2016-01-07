@@ -140,8 +140,21 @@ C If Required call restart
           T(N,j)=T(N-1,j)
         enddo
 
-        iteration=1
-* iteration=1 denotes the 1st iteration
-      rms=1.d0
-      dt=1.d-3
+* Main Iterative
+        rms=1.0
+        dt=0.001
+        do while(rms.gt.1e-11)
+
+          do i=1,N
+            do j=1,M
+              W1(i,j)=W(i,j)
+              T1(i,j)=T(i,j)
+            enddo
+          enddo
+	
+          do i=1,N
+            do j=1,M
+              rhs(i,j)=T1(i,j)
+            enddo
+          enddo
         
