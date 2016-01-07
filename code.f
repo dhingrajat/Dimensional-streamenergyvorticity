@@ -1,3 +1,147 @@
         include 'data.in'
 
+        double precision trv,axl
+        trv = 1.2d0
+        axl = 12.d0
+
+        dx=1.2/(N-1)
+        dy=axl/dfloat(M-1)
+        M1(1)= int(ycp1/dy)+1
+        M2(1)= int(ycp2/dy)+1
+        M1(2)= int(ycp3/dy)+1
+        do k = 1,L
+          M1(k)=M1(1)+(k-1)*(M1(2)-M1(1))
+          M2(k)=M2(1)+(k-1)*(M1(2)-M1(1))
+*         write(*,33)M1(k),M2(k)
+*33       format(1x,i5,2x,i5)
+        enddo
+      
+        N0=int(t_w/dx)+1
+        N1=int(xcp/dx)+N0
+        N2=N-N0+1
+        a1=(1.0/dx**2.d0)+(1.0/dx2**2.d0)
+
+* Initilaization
+        do i=1,N
+          do j=1,M
+            W(i,j)=0.0  !Vorticity
+            H(i,j)=0.0  !Stream function
+            T(i,j)=0.0  !Energy
+            u(i,j)=0.0  !u-velocity	  
+            v(i,j)=0.0  !v-velocity
+          enddo
+        enddo
+
+C If Required call restart
+
+* Boundary Velocity
+        do i=N0,N2
+          u(i,1)=0.0
+          u(i,M)=u(i,M-1)
+            if(i.le.N1)then
+              do k=1,L
+                u(i,M1(k))=0.0
+                u(i,M2(k))=0.0
+                v(i,M1(k))=0.0
+                v(i,M2(k))=0.0
+              enddo
+            endif
+          v(i,1)=vinlet
+          v(i,M)=v(i,M-1)
+        enddo
+        do j=2,M-1
+          ib=0
+          do k=1,L
+            if ((j.gt.M1(k)).and.(j.lt.M2(k)))then
+              ib=1
+            endif
+          enddo
+          if (ib.eq.0)then
+            u(N0,j)=0.0
+            v(N0,j)=0.0
+          else
+            u(N1,j)=0.0
+            v(N1,j)=0.0
+          endif
+          u(N2,j)=0.0
+          v(N2,j)=0.0
+        enddo
+
+* Boundary Stream-Function || x(N0)=0 and x(N2)=1
+        do i=N0,N2
+          x(i)=0.0+dx*dfloat(i-N0)
+        enddo
+        do i=N0,N2
+          H(i,1)=-1.0*x(i)
+          H(i,M)=H(i,M-1)
+          if(i.le.N1)then
+            do k=1,L
+              H(i,M1(k))=0.0
+              H(i,M2(k))=0.0
+            enddo
+          endif
+        enddo
+        do j=2,M-1
+          ib=0
+          do k=1,L
+            if ((j.gt.M1(k)).and.(j.lt.M2(k)))then
+              ib=1
+            endif
+          enddo
+          if (ib.eq.0)then
+            H(N0,j)=0.0
+          else
+            H(N1,j)=0.0
+          endif
+          H(N2,j)=H(N2,1)
+        enddo
+
+* Boundary Vorticity
+        do i=N0,N2
+          W(i,1)=0.0
+          W(i,M)=W(i,M-1)
+          if (i.le.N1)then
+            do k=1,L
+              W(i,M1(k))=2.0*(H(i,M1(k))-H(i,M1(k)-1))/dy**2
+              W(i,M2(k))=2.0*(H(i,M2(k))-H(i,M2(k)+1))/dy**2
+            enddo
+          endif
+        enddo
+        do j=2,M-1
+          ib=0
+          do k=1,L
+            if ((j.gt.M1(k)).and.(j.lt.M2(k)))then
+              ib=1
+            endif
+          enddo
+          if (ib.eq.0)then
+            W(N0,j)=2.0*(H(N0,j)-H(N0+1,j))/dx**2
+          else
+            W(N1,j)=2.0*(H(N1,j)-H(N1+1,j))/dx**2
+          endif
+          W(N2,j)=2.0*(H(N2,j)-H(N2-1,j))/dx**2
+        enddo
+
+* Boundary Temperature
+        do i=1,N0-1
+          T(i,1)=T(i,2)
+          T(i,M)=T(i,M-1)
+        enddo
+        do i=N0,N2
+          T(i,1)=300.0
+          T(i,M)=T(i,M-1)
+        enddo
+        do i=N2+1,N
+          T(i,1)=T(i,2)
+          T(i,M)=T(i,M-1)
+        enddo
+        do j=2,M-1
+          T(1,j)=T(2,j)
+          T(N,j)=T(N-1,j)
+        enddo
+
+        iteration=1
+* iteration=1 denotes the 1st iteration
+      rms=1.d0
+      dt=1.d-3
         
