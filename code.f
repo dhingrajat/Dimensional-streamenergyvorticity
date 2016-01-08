@@ -143,18 +143,97 @@ C If Required call restart
 * Main Iterative
         rms=1.0
         dt=0.001
-        do while(rms.gt.1e-11)
-
+        do while(rms.gt.1e-5)
+          rms=0.0
           do i=1,N
             do j=1,M
               W1(i,j)=W(i,j)
               T1(i,j)=T(i,j)
             enddo
           enddo
-	
-          do i=1,N
-            do j=1,M
-              rhs(i,j)=T1(i,j)
+
+* Energy loop
+          rmt=1.0
+          do while(rmt.gt.1e-4)
+            rmt=0.0
+            do i=1,N
+              do j=1,M
+                RS(i,j)=T(i,j)
+              enddo
+            enddo
+            do i=1,N
+              do j=1,M
+                if (i.lt.N0)then
+                  if ((i.eq.1).and.(j.eq.1))then
+                  
+                  elseif ((j.eq.1).and.(i.gt.1))then
+                  
+                  elseif ((i.eq.1).and.(j.gt.1).and.(j.lt.M))then
+                  
+                  elseif ((i.eq.1).and.(j.eq.M))then
+                  
+                  elseif ((j.eq.M).and.(i.gt.1))then
+                  
+                  else
+                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))/dx**2+
+     &                (T(i,j+1)+T(i,j-1))/dy**2))/(1/dt+2.0*t1/(r1c1)*a1)
+                  endif
+                elseif (i.gt.N2)then
+                  if ((i.eq.N).and.(j.eq.1))then
+                  
+                  elseif ((j.eq.1).and.(i.lt.N))then
+                  
+                  elseif ((i.eq.N).and.(j.gt.1).and.(j.lt.M))then
+                  
+                  elseif ((i.eq.N).and.(j.eq.M))then
+                  
+                  elseif ((j.eq.M).and.(i.lt.N))then
+                  
+                  else
+                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))/dx**2+
+     &                (T(i,j+1)+T(i,j-1))/dy**2))/(1/dt+2.0*t1/(r1c1)*a1)
+                  endif
+                elseif (i.eq.N0)then
+                  if (j.eq.1)then
+                  
+                  elseif (j.eq.M)then
+                  
+                  else
+                    ib=0
+                    do k=1,L
+                      if ((j.gt.M1(k)).and.(j.lt.M2(k)))then
+                        ib=1
+                      endif
+                    enddo
+                    if (ib.eq.0)then
+                      
+                    else
+                      
+                    endif
+                  endif
+                elseif (i.eq.N2)then
+                  if (j.eq.1)then
+                    
+                  elseif (j.eq.M)then
+                    
+                  else
+                    
+                  endif
+                else
+                  if (j.eq.1)then
+                
+                endif
+              enddo
+            enddo
+            do i=1,N
+              do j=1,M
+                rmt=dmax1(rmt,abs(T(i,j)-RS(i,j)))
+              enddo
             enddo
           enddo
+                
         
+main loop--        enddo
+
+
+
