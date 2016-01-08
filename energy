@@ -1,60 +1,60 @@
 #1.Dimensional Energy Equation in Fluid
-# dT/dt + u(dT/dx) + v(dT/dy) = k/(rc)*( d2T/dx2 + d2T/dy2 )
+# dT/dt + u(dT/dx) + v(dT/dy) = b/(r*c)*( d2T/dx2 + d2T/dy2 )
 # implicit solution
 # T1=Temperature at n-level
 expansion = u(dT/dx) + v(dT/dy) 
 u(i,j)*(T(i+1,j)-T(i-1,j))/(2.0*dx) + v(i,j)*(T(i,j+1)-T(i,j-1))/(2.0*dy)
-expansion = k/(rc)*( d2T/dx2 + d2T/dy2 )
-k/(rc)*( {T(i+1,j)-2.0*T(i,j)+T(i-1,j)}/dx**2 + {T(i,j+1)-2.0*T(i,j)+T(i,j-1)}/dy**2 )
-k/(rc)*( (T(i+1,j)+T(i-1,j))/dx**2 + (T(i,j+1)+T(i,j-1))/dy**2 ) - k/(rc)*(2.0*T(i,j)/dx**2 + 2.0*T(i,j)/dy**2) 
-k/(rc)*( (T(i+1,j)+T(i-1,j))/dx**2 + (T(i,j+1)+T(i,j-1))/dy**2 ) - k/(rc)*2.0*T(i,j)*(1.0/dx**2 + 1.0/dy**2)
+expansion = b/(r*c)*( d2T/dx2 + d2T/dy2 )
+b/(r*c)*( {T(i+1,j)-2.0*T(i,j)+T(i-1,j)}/dx**2 + {T(i,j+1)-2.0*T(i,j)+T(i,j-1)}/dy**2 )
+b/(r*c)*( (T(i+1,j)+T(i-1,j))/dx**2 + (T(i,j+1)+T(i,j-1))/dy**2 ) - b/(r*c)*(2.0*T(i,j)/dx**2 + 2.0*T(i,j)/dy**2) 
+b/(r*c)*( (T(i+1,j)+T(i-1,j))/dx**2 + (T(i,j+1)+T(i,j-1))/dy**2 ) - b/(r*c)*2.0*T(i,j)*(1.0/dx**2 + 1.0/dy**2)
 
 final expression => T(i,j)=( T1(i,j)/dt + (diffusion term except T(i,j) term) - (convection term) )/(coefficient of T(i,j))
-T(i,j)= ( T1(i,j)/dt + k/(rc)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2)  - 
-linecontinued    u(i,j)*(T(i+1,j)-T(i-1,j))/(2.0*dx) - v(i,j)*(T(i,j+1)-T(i,j-1))/(2.0*dy) )/(1/dt+2.0*k/(rc)*(1.0/dx**2+1.0/dy**2))
+T(i,j)= ( T1(i,j)/dt + b/(r*c)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2)  - 
+linecontinued    u(i,j)*(T(i+1,j)-T(i-1,j))/(2.0*dx) - v(i,j)*(T(i,j+1)-T(i,j-1))/(2.0*dy) )/(1/dt+2.0*b/(r*c)*(1.0/dx**2+1.0/dy**2))
 
 #2.Dimensional Energy Equation in Wall
-# dT/dt = k1/(r1c1)*( d2T/dx2 + d2T/dy2 )
-T(i,j)= ( T1(i,j)/dt + k1/(r1c1)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2) )/(1/dt+2.0*k1/(r1c1)*(1.0/dx**2+1.0/dy**2))
+# dT/dt = b1/(r1*c1)*( d2T/dx2 + d2T/dy2 )
+T(i,j)= ( T1(i,j)/dt + b1/(r1*c1)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2) )/(1/dt+2.0*b1/(r1*c1)*(1.0/dx**2+1.0/dy**2))
 
 #3.Dimensional Energy Equation in Chip (with q in W/m3 as internal heat generation)
-# dT/dt = k2/(r2c2)*( d2T/dx2 + d2T/dy2 ) + q/(r2c2)
-T(i,j)= ( q/(r2c2) + T1(i,j)/dt + 
-linecontinued    k1/(r1c1)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2) )/(1/dt+2.0*(k1/r1c1)*(1.0/dx**2+1.0/dy**2))
+# dT/dt = b2/(r2*c2)*( d2T/dx2 + d2T/dy2 ) + q/(r2*c2)
+T(i,j)= ( q/(r2*c2) + T1(i,j)/dt + 
+linecontinued    b1/(r1*c1)*((T(i+1,j)+T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2) )/(1/dt+2.0*(b1/r1*c1)*(1.0/dx**2+1.0/dy**2))
 
 #4. Dimensional Wall and Chip interface equation
-# ((r1c1+r2c2)/2.0)*dT/dt = ( k1*T(i-1,j)-(k1+k2)*T(i,j)+k2*T(i+1,j) )/dx**2  + ((k1+k2)/2.d0)*d2T/dy2 + q/(2.0*r2c2)
+# ((r1*c1+r2*c2)/2.0)*dT/dt = ( b1*T(i-1,j)-(b1+b2)*T(i,j)+b2*T(i+1,j) )/dx**2  + ((b1+b2)/2.d0)*d2T/dy2 + q/(2.0*r2*c2)
 # T(i,j) bringing on left side from above
-((r1c1+r2c2)/2.0)*dT/dt + (k1+k2)*(1/dx**2+1/dy**2)*T(i,j)
-T(i,j)*( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) ) - T1(i,j)*(r1c1+r2c2)/(2.0*dt)
+((r1*c1+r2*c2)/2.0)*dT/dt + (b1+b2)*(1/dx**2+1/dy**2)*T(i,j)
+T(i,j)*( (r1*c1+r2*c2)/(2.0*dt) + (b1+b2)*(1/dx**2+1/dy**2) ) - T1(i,j)*(r1*c1+r2*c2)/(2.0*dt)
 # Right Side Terms
-( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2)
+( (b1*T(i-1,j)+b2*T(i+1,j))/dx**2  + (b1+b2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2*c2)
 final expression || (Left side = Right side) || T(i,j) =  (T1(i,j) + right side)/(coefficient of T(i,j))
-(step-1)@ T(i,j)*( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) ) - T1(i,j)*(r1c1+r2c2)/(2.0*dt) = 
-linecontinued    ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2) 
-(step-2)@ T(i,j)*( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) ) = T1(i,j)*(r1c1+r2c2)/(2.0*dt) + 
-linecontinued    ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2  + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2c2)
-(lastly)@ T(i,j) = ( T1(i,j)*(r1c1+r2c2)/(2.0*dt) + ( (k1*T(i-1,j)+k2*T(i+1,j))/dx**2 + (k1+k2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
-linecontinued    + q/(2.0*r2c2) )/( (r1c1+r2c2)/(2.0*dt) + (k1+k2)*(1/dx**2+1/dy**2) )
+(step-1)@ T(i,j)*( (r1*c1+r2*c2)/(2.0*dt) + (b1+b2)*(1/dx**2+1/dy**2) ) - T1(i,j)*(r1*c1+r2*c2)/(2.0*dt) = 
+linecontinued    ( (b1*T(i-1,j)+b2*T(i+1,j))/dx**2  + (b1+b2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2*c2) 
+(step-2)@ T(i,j)*( (r1*c1+r2*c2)/(2.0*dt) + (b1+b2)*(1/dx**2+1/dy**2) ) = T1(i,j)*(r1*c1+r2*c2)/(2.0*dt) + 
+linecontinued    ( (b1*T(i-1,j)+b2*T(i+1,j))/dx**2  + (b1+b2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) + q/(2.0*r2*c2)
+(lastly)@ T(i,j) = ( T1(i,j)*(r1*c1+r2*c2)/(2.0*dt) + ( (b1*T(i-1,j)+b2*T(i+1,j))/dx**2 + (b1+b2)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
+linecontinued    + q/(2.0*r2*c2) )/( (r1*c1+r2*c2)/(2.0*dt) + (b1+b2)*(1/dx**2+1/dy**2) )
 
 #5. Dimensional Wall and Fluid interface equation |a| Left |b| Right
-#|a| ((r1c1+rc)/2.0)*dT/dt = ( k1*T(i-1,j)-(k1+k)*T(i,j)+k*T(i+1,j) )/dx**2  + ((k1+k)/2.d0)*d2T/dy2 
-T(i,j) = ( T1(i,j)*(r1c1+rc)/(2.0*dt) + ( (k1*T(i-1,j)+k*T(i+1,j))/dx**2 + (k1+k)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) )
-linecontinued    /( (r1c1+rc)/(2.0*dt) + (k1+k)*(1/dx**2+1/dy**2) )
+#|a| ((r1*c1+r*c)/2.0)*dT/dt = ( b1*T(i-1,j)-(b1+b)*T(i,j)+b*T(i+1,j) )/dx**2  + ((b1+b)/2.d0)*d2T/dy2 
+T(i,j) = ( T1(i,j)*(r1*c1+r*c)/(2.0*dt) + ( (b1*T(i-1,j)+b*T(i+1,j))/dx**2 + (b1+b)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) )
+linecontinued    /( (r1*c1+r*c)/(2.0*dt) + (b1+b)*(1/dx**2+1/dy**2) )
 
-#|b| ((r1c1+rc)/2.0)*dT/dt = ( k*T(i-1,j)-(k1+k)*T(i,j)+k1*T(i+1,j) )/dx**2  + ((k1+k)/2.d0)*d2T/dy2
-T(i,j) = ( T1(i,j)*(r1c1+rc)/(2.0*dt) + ( (k*T(i-1,j)+k1*T(i+1,j))/dx**2 + (k1+k)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) )
-linecontinued    /( (r1c1+rc)/(2.0*dt) + (k1+k)*(1/dx**2+1/dy**2) )
+#|b| ((r1*c1+r*c)/2.0)*dT/dt = ( b*T(i-1,j)-(b1+b)*T(i,j)+b1*T(i+1,j) )/dx**2  + ((b1+b)/2.d0)*d2T/dy2
+T(i,j) = ( T1(i,j)*(r1*c1+r*c)/(2.0*dt) + ( (b*T(i-1,j)+b1*T(i+1,j))/dx**2 + (b1+b)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) )
+linecontinued    /( (r1*c1+r*c)/(2.0*dt) + (b1+b)*(1/dx**2+1/dy**2) )
 
 #6. Dimensional Chip and Fluid interface equation |a| Top |b| Bottom |c| Front
-#|a| ((r2c2+rc)/2.0)*dT/dt = ((k2+k)/2.d0)*d2T/dx2 + ( k2*T(i,j-1)-(k+k2)*T(i,j)+k*T(i,j+1) )/dy**2 + q/(2.0*r2c2)
-T(i,j) = ( T1(i,j)*(r2c2+rc)/(2.0*dt) + ( (k2+k)/2.0*(T(i+1,j)+T(i-1,j))/dx**2 + (k2*T(i,j-1)+k*T(i,j+1))/dy**2 )
-linecontinued    + q/(2.0*r2c2) )/( (r2c2+rc)/(2.0*dt) + (k2+k)*(1/dx**2+1/dy**2) )
+#|a| ((r2*c2+r*c)/2.0)*dT/dt = ((b2+b)/2.d0)*d2T/dx2 + ( b2*T(i,j-1)-(b+b2)*T(i,j)+b*T(i,j+1) )/dy**2 + q/(2.0*r2*c2)
+T(i,j) = ( T1(i,j)*(r2*c2+r*c)/(2.0*dt) + ( (b2+b)/2.0*(T(i+1,j)+T(i-1,j))/dx**2 + (b2*T(i,j-1)+b*T(i,j+1))/dy**2 )
+linecontinued    + q/(2.0*r2*c2) )/( (r2*c2+r*c)/(2.0*dt) + (b2+b)*(1/dx**2+1/dy**2) )
 
-#|b| ((r2c2+rc)/2.0)*dT/dt = ((k2+k)/2.d0)*d2T/dx2 + ( k*T(i,j-1)-(k+k2)*T(i,j)+k2*T(i,j+1) )/dy**2 + q/(2.0*r2c2)
-T(i,j) = ( T1(i,j)*(r2c2+rc)/(2.0*dt) + ( (k2+k)/2.0*(T(i+1,j)+T(i-1,j))/dx**2 + (k*T(i,j-1)+k2*T(i,j+1))/dy**2 )
-linecontinued    + q/(2.0*r2c2) )/( (r2c2+rc)/(2.0*dt) + (k2+k)*(1/dx**2+1/dy**2) )
+#|b| ((r2*c2+r*c)/2.0)*dT/dt = ((b2+b)/2.d0)*d2T/dx2 + ( b*T(i,j-1)-(b+b2)*T(i,j)+b2*T(i,j+1) )/dy**2 + q/(2.0*r2*c2)
+T(i,j) = ( T1(i,j)*(r2*c2+r*c)/(2.0*dt) + ( (b2+b)/2.0*(T(i+1,j)+T(i-1,j))/dx**2 + (b*T(i,j-1)+b2*T(i,j+1))/dy**2 )
+linecontinued    + q/(2.0*r2*c2) )/( (r2*c2+r*c)/(2.0*dt) + (b2+b)*(1/dx**2+1/dy**2) )
 
-#|c| ((r2c2+rc)/2.0)*dT/dt = ( k2*T(i-1,j)-(k2+k)*T(i,j)+k*T(i+1,j) )/dx**2 + ((k2+k)/2.d0)*d2T/dy2 + q/(2.0*r2c2) 
-T(i,j) = ( T1(i,j)*(r2c2+rc)/(2.0*dt) + ( (k2*T(i-1,j)+k*T(i+1,j))/dx**2  + (k2+k)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
-linecontinued    + q/(2.0*r2c2) )/( (r2c2+rc)/(2.0*dt) + (k2+k)*(1/dx**2+1/dy**2) )
+#|c| ((r2*c2+r*c)/2.0)*dT/dt = ( b2*T(i-1,j)-(b2+b)*T(i,j)+b*T(i+1,j) )/dx**2 + ((b2+b)/2.d0)*d2T/dy2 + q/(2.0*r2*c2) 
+T(i,j) = ( T1(i,j)*(r2*c2+r*c)/(2.0*dt) + ( (b2*T(i-1,j)+b*T(i+1,j))/dx**2  + (b2+b)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 )
+linecontinued    + q/(2.0*r2*c2) )/( (r2*c2+r*c)/(2.0*dt) + (b2+b)*(1/dx**2+1/dy**2) )
