@@ -165,60 +165,61 @@ C If Required call restart
               do j=1,M
                 if (i.lt.N0)then
                   if ((i.eq.1).and.(j.eq.1))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*(2.0*T(i+1,j)
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*(2.0*T(i+1,j)
      &                /dx**2+2.0*T(i,j+1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)                  
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)                  
                   elseif ((j.eq.1).and.(i.gt.1))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*((T(i+1,j)+T(i-1,j))
      &                /dx**2+2.0*T(i,j+1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   elseif ((i.eq.1).and.(j.gt.1).and.(j.lt.M))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*(2.0*T(i+1,j)
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*(2.0*T(i+1,j)
      &                /dx**2+(T(i,j+1)+T(i,j-1))/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   elseif ((i.eq.1).and.(j.eq.M))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*(2.0*T(i+1,j)
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*(2.0*T(i+1,j)
      &                /dx**2+2.0*T(i,j-1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   elseif ((j.eq.M).and.(i.gt.1))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*((T(i+1,j)+T(i-1,j))
      &                /dx**2+2.0*T(i,j-1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   else
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*((T(i+1,j)+T(i-1,j))
      &                /dx**2+(T(i,j+1)+T(i,j-1))/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   endif
                 elseif (i.gt.N2)then
                   if ((i.eq.N).and.(j.eq.1))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*(2.0*T(i-1,j)
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*(2.0*T(i-1,j)
      &                /dx**2+2.0*T(i,j+1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)  
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)  
                   elseif ((j.eq.1).and.(i.lt.N))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*((T(i+1,j)+T(i-1,j))
      &                /dx**2+2.0*T(i,j+1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   elseif ((i.eq.N).and.(j.gt.1).and.(j.lt.M))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*(2.0*T(i-1,j)
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*(2.0*T(i-1,j)
      &                /dx**2+(T(i,j+1)+T(i,j-1))/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   elseif ((i.eq.N).and.(j.eq.M))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*(2.0*T(i-1,j)
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*(2.0*T(i-1,j)
      &                /dx**2+2.0*T(i,j-1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   elseif ((j.eq.M).and.(i.lt.N))then
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*((T(i+1,j)+T(i-1,j))
      &                /dx**2+2.0*T(i,j-1)/dy**2))
-     &                /(1/dt+2.0*t1/(r1c1)*a1)
+     &                /(1/dt+2.0*t1/(r1*c1)*a1)
                   else
-                    T(i,j)=(T1(i,j)/dt+t1/(r1c1)*((T(i+1,j)+T(i-1,j))/dx**2+
-     &                (T(i,j+1)+T(i,j-1))/dy**2))/(1/dt+2.0*t1/(r1c1)*a1)
+                    T(i,j)=(T1(i,j)/dt+t1/(r1*c1)*((T(i+1,j)+T(i-1,j))/dx**2+
+     &                (T(i,j+1)+T(i,j-1))/dy**2))/(1/dt+2.0*t1/(r1*c1)*a1)
                   endif
                 elseif (i.eq.N0)then
                   if (j.eq.1)then
                     T(i,j)=300.0
                   elseif (j.eq.M)then
-                  
+                  T(i,j) = ( T1(i,j)*(r1*c1+r*c)/(2.0*dt) + ( (k1*T(i-1,j)+k*T(i+1,j))/dx**2 + (k1+k)/2.0*(T(i,j+1)+T(i,j-1))/dy**2 ) )
+linecontinued    /( (r1c1+rc)/(2.0*dt) + (k1+k)*(1/dx**2+1/dy**2) )
                   else
                     ib=0
                     do k=1,L
