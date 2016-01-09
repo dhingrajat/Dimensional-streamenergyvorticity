@@ -211,8 +211,9 @@ C If Required call restart
      &                /dx**2+2.0*T(i,j-1)/dy**2))
      &                /(1/dt+2.0*b1/(r1*c1)*a1)
                   else
-                    T(i,j)=(T1(i,j)/dt+b1/(r1*c1)*((T(i+1,j)+T(i-1,j))/dx**2+
-     &                (T(i,j+1)+T(i,j-1))/dy**2))/(1/dt+2.0*b1/(r1*c1)*a1)
+                    T(i,j)=(T1(i,j)/dt+b1/(r1*c1)*((T(i+1,j)+
+     &                T(i-1,j))/dx**2+(T(i,j+1)+T(i,j-1))/dy**2))/
+     &                (1/dt+2.0*b1/(r1*c1)*a1)
                   endif
                 elseif (i.eq.N0)then
                   if (j.eq.1)then
@@ -229,14 +230,15 @@ C If Required call restart
                       endif
                     enddo
                     if (ib.eq.0)then
-                      T(i,j)=(T1(i,j)*(r1*c1+r*c)/(2.0*dt)+((b1*T(i-1,j)+
-     &                  b*T(i+1,j))/dx**2+(b1+b)/2.0*(T(i,j+1)+T(i,j-1))/
-     &                  dy**2))/((r1*c1+r*c)/(2.0*dt)+(b1+b)*a1)
+                      T(i,j)=(T1(i,j)*(r1*c1+r*c)/(2.0*dt)+((b1*
+     &                  T(i-1,j)+b*T(i+1,j))/dx**2+(b1+b)/2.0*
+     &                  (T(i,j+1)+T(i,j-1))/dy**2))/((r1*c1+r*c)
+     &                  /(2.0*dt)+(b1+b)*a1)
                     else
-                      T(i,j)=(T1(i,j)*(r1*c1+r2*c2)/(2.0*dt)+((b1*T(i-1,j)+
-     &                  b2*T(i+1,j))/dx**2+(b1+b2)/2.0*(T(i,j+1)+T(i,j-1))/
-     &                  dy**2)+q/(2.0*r2*c2))/((r1*c1+r2*c2)/(2.0*dt)+
-     &                  (b1+b2)*a1)
+                      T(i,j)=(T1(i,j)*(r1*c1+r2*c2)/(2.0*dt)+((b1*
+     &                  T(i-1,j)+b2*T(i+1,j))/dx**2+(b1+b2)/2.0*
+     &                  (T(i,j+1)+T(i,j-1))/dy**2)+q/(2.0*r2*c2))/
+     &                  ((r1*c1+r2*c2)/(2.0*dt)+(b1+b2)*a1)
                     endif
                   endif
                 elseif (i.eq.N2)then
@@ -313,6 +315,94 @@ C If Required call restart
               enddo
             enddo
           enddo
+          
+* Vorticity loop || Dirchlet Boundaries ||
+          do i=N0,N2
+            W(i,1)=0.0
+            if (i.le.N1)then
+              do k=1,L
+                W(i,M1(k))=2.0*(H(i,M1(k))-H(i,M1(k)-1))/dy**2
+                W(i,M2(k))=2.0*(H(i,M2(k))-H(i,M2(k)+1))/dy**2
+              enddo
+            endif
+          enddo
+          do j=2,M
+            ib=0
+            do k=1,L
+              if ((j.gt.M1(k)).and.(j.lt.M2(k)))then
+                ib=1
+              endif
+            enddo
+            if (ib.eq.0)then
+              W(N0,j)=2.0*(H(N0,j)-H(N0+1,j))/dx**2
+            else
+              W(N1,j)=2.0*(H(N1,j)-H(N1+1,j))/dx**2
+            endif
+            W(N2,j)=2.0*(H(N2,j)-H(N2-1,j))/dx**2
+          enddo
+
+          rmt=1.0
+          do while(rmt.gt.1e-4)
+            rmt=0.0
+            do i=N0,N2
+              do j=1,M
+                ib=0
+                do k=1,L
+                  if ((j.gt.M1(k)).and.(j.lt.M2(k)).and.(i.lt.N1))then
+                    ib=1
+                  endif
+                enddo
+                if (ib.eq.0)then
+                  RS(i,j)=W(i,j)
+                endif
+              enddo
+            enddo
+            do i=N0+1,N2-1
+              do j=2,M
+                if (j.eq.M)then
+                  W(i,j)=(W1(i,j)/dt+g*b*(T(i+1,j)-T(i-1,j))
+     &              /(2.0*dx)+dv/r*((W(i+1,j)+W(i-1,j))/dx**2+
+     &              2.0*W(i,j-1)/dy**2))/(1/dt+2.0*dv/r*a1)
+                else
+                  ib=0
+                  do k=1,L
+                    if ((j.ge.M1(k)).and.(j.le.M2(k)).and.(i.le.N1))then
+                      ib=1
+                    endif
+                  enddo
+                  if (ib.eq.0)then
+                    W(i,j)=(W1(i,j)/dt+g*b*(T(i+1,j)-T(i-1,j))
+     &                /(2.0*dx)+dv/r*((W(i+1,j)+W(i-1,j))/dx**2+
+     &                (W(i,j+1)+W(i,j-1))/dy**2)-u(i,j)*(W(i+1,j)-
+     &                W(i-1,j))/(2.0*dx)-v(i,j)*(W(i,j+1)-W(i,j-1))/
+     &                (2.0*dy))/(1/dt+2.0*dv/r*a1)
+                  endif
+                endif
+              enddo
+            enddo
+            do i=N0,N2
+              do j=1,M
+                ib=0
+                do k=1,L
+                  if ((j.gt.M1(k)).and.(j.lt.M2(k)).and.(i.lt.N1))then
+                    ib=1
+                  endif
+                enddo  
+                if (ib.eq.0)then
+                  rmt=dmax1(rmt,abs(W(i,j)-RS(i,j)))
+                endif
+              enddo
+            enddo              
+          enddo
+
+* Stream-function loop
+
+          
+                
+
+ 
+                
+                    
                 
         
 main loop--        enddo
