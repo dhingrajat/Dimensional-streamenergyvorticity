@@ -4,7 +4,7 @@
         trv = 1.2d0
         axl = 12.d0
 
-        dx=1.2/(N-1)
+        dx=trv/(N-1)
         dy=axl/dfloat(M-1)
         M1(1)= int(ycp1/dy)+1
         M2(1)= int(ycp2/dy)+1
@@ -19,7 +19,7 @@
         N0=int(t_w/dx)+1
         N1=int(xcp/dx)+N0
         N2=N-N0+1
-        a1=(1.0/dx**2.d0)+(1.0/dx2**2.d0)
+        a1=(1.0/dx**2)+(1.0/dy**2)
 
 * Initilaization
         do i=1,N
@@ -67,7 +67,7 @@ C If Required call restart
           v(N2,j)=0.0
         enddo
 
-* Boundary Stream-Function || x(N0)=0 and x(N2)=1
+* Boundary Stream-Function || x(N0)=0 and x(N2)=vinlet
         do i=N0,N2
           x(i)=0.0+dx*dfloat(i-N0)
         enddo
