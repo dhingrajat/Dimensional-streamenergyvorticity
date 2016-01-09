@@ -1,17 +1,17 @@
 #1.Dimensional Vorticity Equation in Fluid
-# dW/dt + u(dW/dx) + v(dW/dy) = mu/r*( d2W/dx2 + d2W/dy2 ) + gb(dT/dx)
+# dW/dt + u(dW/dx) + v(dW/dy) = dv/r*( d2W/dx2 + d2W/dy2 ) + gb(dT/dx)
 # implicit solution
-# W1=Vorticity at n-level || mu=dynamic viscosity || b=beta
+# W1=Vorticity at n-level || dv=dynamic viscosity || b=beta
 expansion = u(dW/dx) + v(dW/dy) 
 u(i,j)*(W(i+1,j)-W(i-1,j))/(2.0*dx) + v(i,j)*(W(i,j+1)-W(i,j-1))/(2.0*dy)
-expansion = mu/r*( d2W/dx2 + d2W/dy2 ) + gb(dT/dx)
-mu/r*( {W(i+1,j)-2.0*W(i,j)+W(i-1,j)}/dx**2 + {W(i,j+1)-2.0*W(i,j)+W(i,j-1)}/dy**2 ) + gb*(T(i+1,j)-T(i-1,j))/(2.0*dx)
-mu/r*( (W(i+1,j)+W(i-1,j))/dx**2 + (W(i,j+1)+W(i,j-1))/dy**2 ) - mu/r*(2.0*W(i,j)/dx**2 + 2.0*W(i,j)/dy**2) + gb*(T(i+1,j)-T(i-1,j))/(2.0*dx)
-mu/r*( (W(i+1,j)+W(i-1,j))/dx**2 + (W(i,j+1)+W(i,j-1))/dy**2 ) - mu/r*2.0*W(i,j)*(1.0/dx**2 + 1.0/dy**2) + gb*(T(i+1,j)-T(i-1,j))/(2.0*dx)
+expansion = dv/r*( d2W/dx2 + d2W/dy2 ) + gb(dT/dx)
+dv/r*( {W(i+1,j)-2.0*W(i,j)+W(i-1,j)}/dx**2 + {W(i,j+1)-2.0*W(i,j)+W(i,j-1)}/dy**2 ) + g*b*(T(i+1,j)-T(i-1,j))/(2.0*dx)
+dv/r*( (W(i+1,j)+W(i-1,j))/dx**2 + (W(i,j+1)+W(i,j-1))/dy**2 ) - dv/r*(2.0*W(i,j)/dx**2 + 2.0*W(i,j)/dy**2) + g*b*(T(i+1,j)-T(i-1,j))/(2.0*dx)
+dv/r*( (W(i+1,j)+W(i-1,j))/dx**2 + (W(i,j+1)+W(i,j-1))/dy**2 ) - dv/r*2.0*W(i,j)*(1.0/dx**2 + 1.0/dy**2) + g*b*(T(i+1,j)-T(i-1,j))/(2.0*dx)
 
 final expression => W(i,j)=(W1(i,j)/dt+buoyancy+diffusion term except W(i,j) term-convection term)/(coefficient of W(i,j))
-W(i,j)= ( W1(i,j)/dt+gb*(T(i+1,j)-T(i-1,j))/(2.0*dx) + mu/r*((W(i+1,j)+W(i-1,j))/dx**2+(W(i,j+1)+W(i,j-1))/dy**2)  - 
-linecontinued    u(i,j)*(W(i+1,j)-W(i-1,j))/(2.0*dx) - v(i,j)*(W(i,j+1)-W(i,j-1))/(2.0*dy) )/(1/dt+2.0*mu/r*(1.0/dx**2+1.0/dy**2))
+W(i,j)= ( W1(i,j)/dt+g*b*(T(i+1,j)-T(i-1,j))/(2.0*dx) + dv/r*((W(i+1,j)+W(i-1,j))/dx**2+(W(i,j+1)+W(i,j-1))/dy**2)  - 
+linecontinued    u(i,j)*(W(i+1,j)-W(i-1,j))/(2.0*dx) - v(i,j)*(W(i,j+1)-W(i,j-1))/(2.0*dy) )/(1/dt+2.0*dv/r*(1.0/dx**2+1.0/dy**2))
 
 #1.Dimensional Stream Equation in Fluid
 # d2H/dx2 + d2H/dy2 = -W(i,j)
