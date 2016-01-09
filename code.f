@@ -67,12 +67,9 @@ C If Required call restart
           v(N2,j)=0.0
         enddo
 
-* Boundary Stream-Function || x(N0)=0 and x(N2)=vinlet
+* Boundary Stream-Function
         do i=N0,N2
-          x(i)=0.0+dx*dfloat(i-N0)
-        enddo
-        do i=N0,N2
-          H(i,1)=-1.0*x(i)
+          H(i,1)=vinlet*(i-N0)/(N2-N0)
           H(i,M)=H(i,M-1)
           if(i.le.N1)then
             do k=1,L
@@ -396,9 +393,28 @@ C If Required call restart
           enddo
 
 * Stream-function loop
-
+          rmt=1.0
+          do while(rmt.gt.1e-4)
+            rmt=0.0
+            do i=N0,N2
+              do j=1,M
+                ib=0
+                do k=1,L
+                  if ((j.gt.M1(k)).and.(j.lt.M2(k)).and.(i.lt.N1))then
+                    ib=1
+                  endif
+                enddo
+                if (ib.eq.0)then
+                  RS(i,j)=H(i,j)
+                endif
+              enddo
+            enddo
+            do i=N0+1,N2-1
+              do j=2,M
           
-                
+              enddo
+            enddo
+            
 
  
                 
