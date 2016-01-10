@@ -69,7 +69,7 @@ C If Required call restart
 
 * Boundary Stream-Function
         do i=N0,N2
-          H(i,1)=vinlet*(i-N0)/(N2-N0)
+          H(i,1)=vinlet*dx*(N0-i)
           H(i,M)=H(i,M-1)
           if(i.le.N1)then
             do k=1,L
@@ -411,10 +411,15 @@ C If Required call restart
             enddo
             do i=N0+1,N2-1
               do j=2,M
-          
+          Write different equations
               enddo
             enddo
-            
+            do i=N0,N2
+              do j=1,M
+                rmt=dmax1(rmt,dabs(H(i,j)-RS(i,j)))
+              enddo        
+            enddo
+          enddo  
 
  
                 
