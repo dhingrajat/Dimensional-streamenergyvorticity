@@ -400,7 +400,8 @@ C If Required call restart
               do j=1,M
                 ib=0
                 do k=1,L
-                  if ((j.gt.M1(k)).and.(j.lt.M2(k)).and.(i.lt.N1))then
+                  if ((j.gt.M1(k)).and.(j.lt.M2(k)).and.
+     &              (i.lt.N1))then
                     ib=1
                   endif
                 enddo
@@ -411,22 +412,74 @@ C If Required call restart
             enddo
             do i=N0+1,N2-1
               do j=2,M
-          Write different equations
+                if (j.eq.M)then
+                  H(i,j)=(W(i,j)+(H(i+1,j)+H(i-1,j))/dx**2+
+     &              2.0*H(i,j-1)/dy**2)/(2.0*a1)
+                else
+                  ib=0
+                  do k=1,L
+                    if ((j.ge.M1(k)).and.(j.le.M2(k)).and.(i.le.N1))then
+                      ib=1
+                    endif
+                  enddo
+                  if (ib.eq.0)then
+                    H(i,j)=(W(i,j)+(H(i+1,j)+H(i-1,j))/
+     &                dx**2+(H(i,j+1)+H(i,j-1))/dy**2)/(2.0*a1)  
+                  endif
+                endif
               enddo
             enddo
             do i=N0,N2
               do j=1,M
                 rmt=dmax1(rmt,dabs(H(i,j)-RS(i,j)))
-              enddo        
+              enddo
             enddo
-          enddo  
+          enddo
 
- 
-                
-                    
-                
+* Velocity calculation
+          do i=N0+1,N2-1
+            do j=2,M-1
+              ib=0
+              if (i.le.N1)then
+                do k=1,L
+                  if((j.ge.M1(k)).and.(j.le.M2(k)))then
+                    ib=1
+                  endif
+                enddo
+              endif
+              if (ib.eq.0)then
+                u(i,j)=(H(i,j+1)-H(i,j-1))/(2.0*dy)
+                v(i,j)=(H(i-1,j)-H(i+1,j))/(2.0*dx)
+              endif
+            enddo
+          enddo
+* Boundary Velocity || Exit ||
+          do i=N0,N2
+            u(i,M)=u(i,M-1)
+            v(i,M)=v(i,M-1)
+          enddo
+
+* Steady State Check
+      sum1=0.d0
+      sum2=0.d0
+      do i=2,N-1
+      do j=2,M-1
+      sum1=sum1+(vort(i,j)-vort_old(i,j))**2.d0
+      sum2=sum2+(T(i,j)-T_old(i,j))**2.d0
+      enddo
+      enddo
+      rms1=dsqrt(sum1/dfloat(N*M))
+      rms2=dsqrt(sum2/dfloat(N*M))
+      rms=dmax1(rms1,rms2)
+      rms=rms2
+
+      write(*,*)rms1,rms2
+      write(*,*)
+      iteration=iteration+1
+      
+for main loop-->         enddo
         
-main loop--        enddo
+*  Post processing
 
 
 
