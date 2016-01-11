@@ -138,6 +138,7 @@ C If Required call restart
         enddo
 
 * Main Iterative
+        iterate=1
         rms=1.0
         dt=0.001
         do while(rms.gt.1e-5)
@@ -357,7 +358,7 @@ C If Required call restart
             do i=N0+1,N2-1
               do j=2,M
                 if (j.eq.M)then
-                  W(i,j)=(W1(i,j)/dt+g*b*(T(i+1,j)-T(i-1,j))
+                  W(i,j)=(W1(i,j)/dt+g*bt*(T(i+1,j)-T(i-1,j))
      &              /(2.0*dx)+dv/r*((W(i+1,j)+W(i-1,j))/dx**2+
      &              2.0*W(i,j-1)/dy**2))/(1/dt+2.0*dv/r*a1)
                 else
@@ -368,7 +369,7 @@ C If Required call restart
                     endif
                   enddo
                   if (ib.eq.0)then
-                    W(i,j)=(W1(i,j)/dt+g*b*(T(i+1,j)-T(i-1,j))
+                    W(i,j)=(W1(i,j)/dt+g*bt*(T(i+1,j)-T(i-1,j))
      &                /(2.0*dx)+dv/r*((W(i+1,j)+W(i-1,j))/dx**2+
      &                (W(i,j+1)+W(i,j-1))/dy**2)-u(i,j)*(W(i+1,j)-
      &                W(i-1,j))/(2.0*dx)-v(i,j)*(W(i,j+1)-W(i,j-1))/
@@ -460,24 +461,30 @@ C If Required call restart
           enddo
 
 * Steady State Check
-      sum1=0.d0
-      sum2=0.d0
-      do i=2,N-1
-      do j=2,M-1
-      sum1=sum1+(vort(i,j)-vort_old(i,j))**2.d0
-      sum2=sum2+(T(i,j)-T_old(i,j))**2.d0
-      enddo
-      enddo
-      rms1=dsqrt(sum1/dfloat(N*M))
-      rms2=dsqrt(sum2/dfloat(N*M))
-      rms=dmax1(rms1,rms2)
-      rms=rms2
+          do i=2,N-1
+            do j=2,M-1
+              rms1=dmax1(rms1,abs(T(i,j)-T1(i,j)))
+            enddo
+          enddo
+          do i=N0+1,N2-1
+            do j=2,M-1
+              ib=0
+              do k=1,L
+                if ((j.ge.M1(k)).and.(j.le.M2(k)).and.(i.le.N1))then
+                  ib=1
+                endif
+              enddo
+              if (ib.eq.0)then
+                rms2=dmax1(rms2,abs(W(i,j)-W1(i,j)))
+              endif
+            enddo
+          enddo
+          write(*,*)rms1,rms2
+          rms=dmax1(rms1,rms2)
+          write(*,*)rms
+          iterate=iterate+1
 
-      write(*,*)rms1,rms2
-      write(*,*)
-      iteration=iteration+1
-      
-for main loop-->         enddo
+        enddo
         
 *  Post processing
 
