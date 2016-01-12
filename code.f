@@ -1,9 +1,5 @@
         include 'data.in'
 
-        double precision trv,axl
-        trv = 1.2d0
-        axl = 12.d0
-
         dx=trv/(N-1)
         dy=axl/dfloat(M-1)
         M1(1)= int(ycp1/dy)+1
@@ -485,8 +481,83 @@ C If Required call restart
           iterate=iterate+1
 
         enddo
-        
-*  Post processing
 
+* Velocities output
+        open(10,file='out_uv.dat')
+          write(10,50)
+50        format(1x,'Dimensional Velocity u (x-direction)
+     &      and (y-direction)')
+          write(10,*)
+          write(10,51)
+51        format(7x,'X',10x,'Y',15x,'U',8x,'V')
+          write(10,*)
+          do i=N0,N2
+            do j=1,M
+              ib=0
+              if(i.lt.N1)then
+                do k=1,L
+                  if((j.gt.M1(k)).and.(j.lt.M2(k)))then
+                    ib=1
+                  endif
+                enddo
+              endif
+              if (ib.eq.0)then
+                write(10,52)(i-1)*dx,(j-1)*dy,u(i,j),
+     &            v(i,j)
+52              format(1x,f10.6,2x,f10.6,2x,f22.10,1x,
+     &            f22.10)
+              endif
+            enddo
+            write(10,*)
+          enddo
+        close(10)
 
+* Vorticity and Stream function output
+        open(11,file='out_WH.dat')
+          write(11,53)
+53        format(1x,'Dimensional Vorticity and 
+     &      Stream Function')
+          write(11,*)
+          write(11,54)
+54        format(11x,'X',21X,'Y',25x,'VORTICITY',11x,
+     &       'STREAM FUNCTION')
+          write(11,*)
+          do i=N0,N2
+            do j=1,M
+              ib=0
+              if(i.lt.N1)then
+                do k=1,L
+                  if((j.gt.M1(k)).and.(j.lt.M2(k)))then
+                    bad=1
+                  endif
+                enddo
+              endif
+              if (ib.eq.0)then
+                write(11,55)(i-1)*dx,(j-1)*dy,W(i,j),H(i,j)
+55              format(4x,f14.10,8x,f14.10,16x,f22.10,
+     &            8x,f22.10)
+              endif
+            enddo
+            write(11,*)
+          enddo
+        close(11)
 
+* Energy output
+        open(12,file='out_T.dat')
+          write(12,56)
+56        format(1x,'Dimensional Temperature')
+          write(12,*)
+          write(12,57)
+57        format(7x,'X',10x,'Y',15x,'T')
+          write(12,*)
+          do i=1,N
+            do j=1,M
+              write(12,58)(i-1)*dx,(j-1)*dy,T(i,j)
+58            format(1x,f10.6,2x,f10.6,2x,f22.10)
+            enddo
+            write(12,*)
+          enddo
+        close(12)
+
+        stop
+        end
