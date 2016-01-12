@@ -1,7 +1,7 @@
 #1.Dimensional Vorticity Equation in Fluid
 # dW/dt + u(dW/dx) + v(dW/dy) = dv/r*( d2W/dx2 + d2W/dy2 ) + gb(dT/dx)
 # implicit solution
-# W1=Vorticity at n-level || dv=dynamic viscosity || b=beta
+# W1=Vorticity at n-level || dv=dynamic viscosity || b=beta (bt in code because b is thermal conductivity there)
 expansion = u(dW/dx) + v(dW/dy) 
 u(i,j)*(W(i+1,j)-W(i-1,j))/(2.0*dx) + v(i,j)*(W(i,j+1)-W(i,j-1))/(2.0*dy)
 expansion = dv/r*( d2W/dx2 + d2W/dy2 ) + gb(dT/dx)
