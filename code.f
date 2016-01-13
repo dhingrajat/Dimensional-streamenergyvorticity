@@ -136,7 +136,7 @@ C If Required call restart
 * Main Iterative
         iterate=1
         rms=1.0
-        dt=0.001
+        dt=0.005
         do while(rms.gt.1e-5)
           rms=0.0
           do i=1,N
