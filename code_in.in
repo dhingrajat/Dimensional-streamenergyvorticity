@@ -1,20 +1,14 @@
       implicit double precision(a-h,o-z)
-      integer ib
+      integer ib,iterate,N0,N1,N2
 
       parameter(axl=.3d0,trv=.025d0,N=61,M=601,L=4)
-* Chip related dimensions  ------------   Heat generation
       parameter(xcp=.0075,ycp1=.05,ycp2=.065,ycp3=.075)
-* Thermal Conductivities   ------------   Wall Thickness
       parameter(b=2.64d-2,b1=79.8d0,b2=120.d0,t_w=.0025)
-* Thermal Capacities & Densities  ------------   
-      parameter(r=,r1=,r2=,c=,c1=,c2)
-
-* Other values
+      parameter(r=1.177,r1=2788,r2=2329,c=1004.9)
+      parameter(c1=560,c2=700)
       parameter(g=9.81,bt=3.3d-3,du=1.568d-5,q=100000)
       parameter(vinlet=.3126d0)
-
-      common dt,rms,rms1,rms2,rmt,N0,N1,N2,a1
-      common iterate,M1(L),M2(L)
-      common dx,dy
+      common dx,dy,dt,rms,rms1,rms2,rmt,a1
+      common M1(L),M2(L)
       common RS(N,M),u(N,M),v(N,M),W(N,M),W1(N,M),H(N,M)
       common T(N,M),T1(N,M)
